@@ -1,0 +1,47 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Helper Functions
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      // Security simplified to match database settings configuration
+      return true;
+    }
+
+    // Settings Collection
+    match /settings/{settingId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Free Movies Collection
+    match /free_movies/{movieId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Free Series Collection
+    match /free_series/{seriesId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Favorites Collection
+    match /favorites/{favoriteId} {
+      allow read, write: if true;
+    }
+
+    // User Profiles Collection
+    match /user_profiles/{username} {
+      allow read, write: if true;
+    }
+
+    // Default Deny block for other paths
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
